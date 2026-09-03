@@ -16,16 +16,37 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float yMin;
     [SerializeField] float yMax;
 
+    [Header("Shooting")]
+    [SerializeField] public Rigidbody playerProjectile;
+    [SerializeField] public Transform[] shotSpawns;
+    [SerializeField] public bool canShoot;
+    [SerializeField] public int bulletSpeed;
 
     [Header("Inverted Controls")]
     [SerializeField] bool isInverted;
 
     //Rigidbody rb;
+
+    private void Start()
+    {
+        canShoot = true;
+    }
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-
+        
+        if(Input.GetKeyDown(KeyCode.Space) && canShoot)
+        {
+            canShoot = false;
+            Rigidbody shot;
+            foreach(Transform t in shotSpawns)
+            {
+                shot = Instantiate(playerProjectile, t.position, t.rotation) as Rigidbody;
+                shot.AddForce(t.forward * bulletSpeed, ForceMode.Impulse);
+            } 
+            canShoot = true;
+        } 
 
     }
 
